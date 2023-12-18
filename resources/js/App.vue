@@ -1,62 +1,97 @@
 <template>
     <div>
+        <el-form label-width="80px">
+            <el-row>
+                <el-col :span="16">
+                    <el-form-item label="Name:">
+                        <el-input
+                            type="text"
+                            v-model="name"
+                            placeholder="Search..."
+                            @click.native="search"
+                            clearable
+                        >
+                            <template slot="prepend">
+                                <i class="el-input__icon el-icon-search"></i>
+                            </template>
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">
+                    <el-form-item label="Bedrooms:">
+                        <el-input-number
+                            :min="0"
+                            :max="10"
+                            type="number"
+                            v-model="bedrooms"
+                        ></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="Bathrooms:">
+                        <el-input-number
+                            :min="0"
+                            :max="10"
+                            type="number"
+                            v-model="bathrooms"
+                        ></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="Storeys:">
+                        <el-input-number
+                            :min="0"
+                            :max="10"
+                            type="number"
+                            v-model="storeys"
+                        ></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="Garages:">
+                        <el-input-number
+                            :min="0"
+                            :max="10"
+                            type="number"
+                            v-model="garages"
+                        ></el-input-number>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">
+                    <el-form-item label="Price min:">
+                        <el-input-number type="number" v-model="price_min"></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="Price max:">
+                        <el-input-number type="number" v-model="price_max"></el-input-number>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
 
-        <form>
-            <div>
-                <label for=“name”>Name:</label>
-                <input id=“name” type=“text” v-model="name" @click="search"/>
-            </div>
-            <div>
-                <label for=“bedrooms”>Bedrooms:</label>
-                <input id=“bedrooms” type=“number” v-model="bedrooms"/>
-            </div>
-            <div>
-                <label for=“bathrooms”>Bathrooms:</label>
-                <input id=“bathrooms” type=“number” v-model="bathrooms"/>
-            </div>
-            <div>
-                <label for=“storeys”>Storeys:</label>
-                <input id=“storeys” type=“number” v-model="storeys"/>
-            </div>
-            <div>
-                <label for=“garages”>Garages:</label>
-                <input id=“garages” type=“number” v-model="garages"/>
-            </div>
-            <div>
-                <label for=“price-min”>Price min:</label>
-                <input id=“price-min” type=“number” v-model="price_min"/>
-            </div>
-            <div>
-                <label for=“price-max”>Price max:</label>
-                <input id=“price-max” type=“number” v-model="price_max"/>
-            </div>
-        </form>
+        <el-table
+            v-if="results.length"
+            :data="results"
+            style="width: 100%"
+            size="small"
+        >
+            <el-table-column prop="name" label="Name" width="260"></el-table-column>
+            <el-table-column prop="bedrooms" label="Bedrooms" width="120"></el-table-column>
+            <el-table-column prop="bathrooms" label="Bathrooms" width="120"></el-table-column>
+            <el-table-column prop="storeys" label="Storeys" width="120"></el-table-column>
+            <el-table-column prop="garages" label="Garages" width="120"></el-table-column>
+            <el-table-column prop="price" label="Price"></el-table-column>
+        </el-table>
 
-        <table v-if="results.length" style="width: 100%">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Bedrooms</th>
-                <th>Bathrooms</th>
-                <th>Storeys</th>
-                <th>Garages</th>
-                <th>Price</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="result in results" :key="result.id">
-                <td>{{ result.name }}</td>
-                <td>{{ result.bedrooms }}</td>
-                <td>{{ result.bathrooms }}</td>
-                <td>{{ result.storeys }}</td>
-                <td>{{ result.garages }}</td>
-                <td>{{ result.price }}</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <p v-else>No results found.</p>
-
+        <el-empty
+            v-else
+            description="No results found."
+        ></el-empty>
     </div>
 </template>
 
@@ -100,6 +135,11 @@ export default {
         price_max: function () {
             this.search();
         },
+    },
+    mounted() {
+        window.onload = () => {
+            this.search();
+        };
     },
     methods: {
         async search() {
